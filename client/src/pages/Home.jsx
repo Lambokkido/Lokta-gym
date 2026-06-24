@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const features = [
   {
@@ -16,6 +17,8 @@ const features = [
 ];
 
 export default function Home() {
+  const { user } = useAuth();
+
   return (
     <main>
 
@@ -33,10 +36,10 @@ export default function Home() {
             Lokta <span className="text-emerald-400">Gym</span>
           </h1>
           <Link
-            to="/register"
+            to={user ? '/exercises' : '/register'}
             className="inline-block border-2 border-white text-white hover:bg-white hover:text-gray-900 px-10 py-3 text-lg font-semibold tracking-wide transition-colors"
           >
-            Empezar ahora
+            {user ? 'Ir al catálogo' : 'Empezar ahora'}
           </Link>
         </div>
       </section>
