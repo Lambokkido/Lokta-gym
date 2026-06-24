@@ -15,7 +15,7 @@ export default function Exercises() {
 
   useEffect(() => {
     fetchExercises();
-  }, [muscle, equipment, rehab]);
+  }, [muscle, equipment, rehab, token]);
 
   const fetchExercises = async () => {
     setLoading(true);

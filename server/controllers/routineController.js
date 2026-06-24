@@ -1,5 +1,19 @@
 const Routine = require('../models/Routine');
 
+// GET /api/routines/:id — obtiene una rutina por ID (solo si pertenece al usuario)
+const getRoutineById = async (req, res) => {
+  try {
+    const routine = await Routine.findOne({ _id: req.params.id, user: req.user._id }).populate(
+      'exercises',
+      'name targetMuscle equipment gifUrl'
+    );
+    if (!routine) return res.status(404).json({ message: 'Rutina no encontrada' });
+    res.json(routine);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener rutina', error: error.message });
+  }
+};
+
 // GET /api/routines
 // Devuelve todas las rutinas del usuario autenticado, con los ejercicios populados
 const getMyRoutines = async (req, res) => {
@@ -76,4 +90,4 @@ const deleteRoutine = async (req, res) => {
   }
 };
 
-module.exports = { getMyRoutines, createRoutine, updateRoutine, deleteRoutine };
+module.exports = { getRoutineById, getMyRoutines, createRoutine, updateRoutine, deleteRoutine };

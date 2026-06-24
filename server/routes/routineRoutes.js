@@ -1,5 +1,6 @@
 const express = require('express');
 const {
+  getRoutineById,
   getMyRoutines,
   createRoutine,
   updateRoutine,
@@ -9,11 +10,11 @@ const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Todas las rutas requieren autenticación
 router.use(protect);
 
 router.get('/', getMyRoutines);
 router.post('/', createRoutine);
+router.get('/:id', getRoutineById);
 router.put('/:id', updateRoutine);
 router.delete('/:id', deleteRoutine);
 

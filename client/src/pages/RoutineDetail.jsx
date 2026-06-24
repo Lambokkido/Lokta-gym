@@ -11,7 +11,8 @@ export default function RoutineDetail() {
   const [allExercises, setAllExercises] = useState([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [loadError, setLoadError] = useState('');
+  const [actionError, setActionError] = useState('');
   const [completing, setCompleting] = useState(false);
   const [completedMsg, setCompletedMsg] = useState('');
 
@@ -24,20 +25,17 @@ export default function RoutineDetail() {
     const fetchData = async () => {
       try {
         const [routineRes, exercisesRes] = await Promise.all([
-          fetch(`/api/routines`, { headers: authHeaders }),
+          fetch(`/api/routines/${id}`, { headers: authHeaders }),
           fetch(`/api/exercises`, { headers: authHeaders }),
         ]);
 
-        if (!routineRes.ok || !exercisesRes.ok) throw new Error('Error al cargar datos');
+        if (!routineRes.ok) throw new Error('Rutina no encontrada');
+        if (!exercisesRes.ok) throw new Error('Error al cargar ejercicios');
 
-        const routines = await routineRes.json();
-        const found = routines.find((r) => r._id === id);
-        if (!found) throw new Error('Rutina no encontrada');
-
-        setRoutine(found);
+        setRoutine(await routineRes.json());
         setAllExercises(await exercisesRes.json());
       } catch (err) {
-        setError(err.message);
+        setLoadError(err.message);
       } finally {
         setLoading(false);
       }
@@ -60,7 +58,7 @@ export default function RoutineDetail() {
       const data = await res.json();
       setRoutine(data);
     } catch (err) {
-      setError(err.message);
+      setActionError(err.message);
     }
   };
 
@@ -76,7 +74,7 @@ export default function RoutineDetail() {
       const data = await res.json();
       setRoutine(data);
     } catch (err) {
-      setError(err.message);
+      setActionError(err.message);
     }
   };
 
@@ -92,7 +90,7 @@ export default function RoutineDetail() {
       setCompletedMsg('¡Entrenamiento registrado!');
       setTimeout(() => setCompletedMsg(''), 3000);
     } catch (err) {
-      setError(err.message);
+      setActionError(err.message);
     } finally {
       setCompleting(false);
     }
@@ -113,10 +111,10 @@ export default function RoutineDetail() {
     );
   }
 
-  if (error) {
+  if (loadError) {
     return (
       <main className="flex items-center justify-center min-h-[calc(100vh-64px)]">
-        <p className="text-red-400">{error}</p>
+        <p className="text-red-400">{loadError}</p>
       </main>
     );
   }
@@ -147,9 +145,9 @@ export default function RoutineDetail() {
         </div>
       </div>
 
-      {error && (
+      {actionError && (
         <p className="bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg px-4 py-2 mb-6 text-sm">
-          {error}
+          {actionError}
         </p>
       )}
 

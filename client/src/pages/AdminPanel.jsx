@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 
-const ROLE_LABELS = { user: 'Usuario', coach: 'Coach', admin: 'Admin' };
 const ROLE_COLORS = {
   user: 'text-gray-400 border-gray-600',
   coach: 'text-blue-400 border-blue-500/50',
